@@ -19,7 +19,7 @@ $ docker volume create \
 	squignix
 ```
 
-(The size of this `tmpfs` controls how much RAM will be used for cache and also how much cache will be available.  If having the cache in RAM isn't your thing and you still want an upper limit, you'll need to modify the NGINX configuration to add `max_size` to the `proxy_cache_path` directive.)
+(The size of this `tmpfs` controls how much RAM will be used for cache and also how much cache will be available, but `max_size` has to be set in the configuration to a slightly lower value since NGINX will burst beyond the `max_size` and then reign it back in.  If having the cache in RAM isn't your thing or you want a different upper limit, you'll need to modify the NGINX configuration to adjust `max_size` on `proxy_cache_path` to your desired value.)
 
 ```console
 $ docker run -dit --name squignix -v squignix:/var/cache/nginx tianon/squignix
