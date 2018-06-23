@@ -10,4 +10,6 @@ RUN set -ex; \
 COPY http.conf /etc/nginx/conf.d/default.conf
 COPY stream.conf /etc/nginx/non-http-conf.d/
 
+RUN nginx-debug -t
+
 EXPOSE 80 443 11371
