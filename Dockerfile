@@ -20,9 +20,12 @@ RUN set -eux; \
 	{ \
 		echo; \
 		echo 'include /etc/nginx/non-http-conf.d/*.conf;'; \
-	} >> /etc/nginx/nginx.conf
-
-# TODO if ppc64le or s390x, set server_names_hash_bucket_size 64; in http block
+	} >> /etc/nginx/nginx.conf; \
+	\
+	apkArch="$(apk --print-arch)"; \
+	case "$apkArch" in \
+		ppc64le | s390x) echo 'server_names_hash_bucket_size 64;' >> "/etc/nginx/conf.d/$apkArch.conf" ;; \
+	esac
 
 COPY http.conf /etc/nginx/conf.d/default.conf
 COPY stream.conf /etc/nginx/non-http-conf.d/
