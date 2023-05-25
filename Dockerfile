@@ -16,10 +16,13 @@ RUN set -eux; \
 	sed -ri -e 's/^worker_processes.*$/worker_processes auto;/g' /etc/nginx/nginx.conf; \
 	grep -n 'worker_processes auto' /etc/nginx/nginx.conf; \
 	\
-	mkdir /etc/nginx/non-http-conf.d; \
+# naming this to match https://github.com/nginxinc/docker-nginx/commit/b053826f5ddc6cccd43ada260c8077744319363d (but in a way that supports a read-only container)
+	mkdir /etc/nginx/stream-conf.d; \
 	{ \
 		echo; \
-		echo 'include /etc/nginx/non-http-conf.d/*.conf;'; \
+		echo 'stream {'; \
+		echo '  include /etc/nginx/stream-conf.d/*.conf;'; \
+		echo '}'; \
 	} >> /etc/nginx/nginx.conf; \
 	\
 	apkArch="$(apk --print-arch)"; \
@@ -28,7 +31,7 @@ RUN set -eux; \
 	esac
 
 COPY http.conf /etc/nginx/conf.d/default.conf
-COPY stream.conf /etc/nginx/non-http-conf.d/
+COPY stream-tls.conf /etc/nginx/stream-conf.d/tls.conf
 
 RUN nginx-debug -t
 
